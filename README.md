@@ -108,7 +108,7 @@ cd 5GNR-SNR-Impairments-Dataset
 <p><strong>Requirements:</strong></p>
 
 <ul>
-  <li>MATLAB R2024a (or later)</li>
+  <li>Tested with MATLAB R2024a.</li>
   <li>5G Toolbox</li>
   <li>Communications Toolbox</li>
   <li>Signal Processing Toolbox</li>
@@ -118,14 +118,28 @@ cd 5GNR-SNR-Impairments-Dataset
 <p>The dataset generation code relies on MATLAB's <code>nrCDLChannel</code> implementation from the 5G Toolbox together with modulation, channel modeling, and signal processing functions provided by the listed toolboxes.</p>
 
 
-<h2>Repository Structure</h2>
-<ul>
-  <li><code>assets/pipeline_architecture.png</code> — Fig. 1, dataset generation pipeline diagram</li>
-  <li><code>data/Enhanced_5G_Dataset_100K.csv</code> — 100K samples, 22 features + SNR_dB label</li>
-  <li><code>generate_dataset.m</code> — MATLAB dataset generator</li>
-  <li><code>requirements.txt</code> — Python package dependencies for downstream analysis</li>
-</ul>
 
+<h2>Repository Structure</h2>
+
+<pre><code>
+5GNR-SNR-Impairments-Dataset/
+│
+├── assets/
+│   └── pipeline_architecture.png      # Dataset generation pipeline
+│
+├── data/
+│   └── Enhanced_5G_Dataset_100K.csv   # 100K synthetic dataset
+│
+├── src/
+│   ├── generate_dataset.m             # Main dataset generation script
+│   ├── generate_channel.m             # 3GPP CDL channel generation
+│   ├── apply_impairments.m            # RF impairment models
+│   ├── estimate_snr.m                 # Classical SNR estimators
+│   └── compute_features.m             # Feature extraction
+│
+├── README.md                          # Project documentation
+└── LICENSE                            # MIT License
+</code></pre>
 
 <h2>Citation</h2>
 
