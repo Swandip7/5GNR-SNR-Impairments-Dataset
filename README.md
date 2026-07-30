@@ -134,7 +134,11 @@ cd 5GNR-SNR-Impairments-Dataset
 
 <h2>Contributing</h2>
 <p>We welcome contributions! If you want to extend the dataset, add new impairment models, fix bugs, or improve documentation, please open an issue or submit a pull request.</p>
+<h2>Acknowledgements</h2>
 
+<p>
+This dataset was developed to support reproducible research on domain-adaptive SNR estimation for 5G NR communication systems under realistic propagation and RF impairment conditions.
+</p>
 <h2>License</h2>
 
 <p>
