@@ -19,9 +19,9 @@
 
 <h2>System Architecture</h2>
 <p align="center">
-  <img src="assets/pipeline_architecture.png" alt="5G NR SNR Estimation Dataset Generation Pipeline" width="800">
+  <img src="assets/pipeline_architecture.png" alt="5G NR SNR Estimation Dataset Generation Pipeline" width="600">
 </p>
-<p align="center"><em>Fig. 1 — End-to-end dataset generation pipeline: scenario selection, 3GPP CDL channel realization, MIMO propagation, RF impairment injection, and feature-based SNR estimation.</em></p>
+<p align="center"><em>Fig. 1 : End-to-end dataset generation pipeline: scenario selection, 3GPP CDL channel realization, MIMO propagation, RF impairment injection, and feature-based SNR estimation.</em></p>
 
 <table>
   <tr><th>Stage</th><th>Description</th></tr>
@@ -98,26 +98,25 @@
 <h2>Getting Started</h2>
 
 <h3>Installation</h3>
+
 <p>Clone the repository:</p>
-<pre><code>git clone &lt;your-repo-url&gt;
-cd &lt;your-repo-folder&gt;
-</code></pre>
-<p>Requires MATLAB with the 5G Toolbox and Communications Toolbox (for <code>nrCDLChannel</code>, <code>pskmod</code>/<code>qammod</code>, etc.).</p>
 
-<h3>Usage</h3>
-<p>Regenerate the full 100K-sample dataset:</p>
-<pre><code>% Run the dataset generator
-generate_dataset
+<pre><code>git clone https://github.com/Swandip7/5GNR-SNR-Impairments-Dataset.git
+cd 5GNR-SNR-Impairments-Dataset
 </code></pre>
-<p>This produces <code>Enhanced_5G_Dataset_100K.csv</code> (feature matrix + labels) and <code>enhanced_baseline_results.mat</code> (classical estimator outputs for benchmarking).</p>
 
-<p>Loading the dataset in Python:</p>
-<pre><code>import pandas as pd
+<p><strong>Requirements:</strong></p>
 
-df = pd.read_csv('data/Enhanced_5G_Dataset_100K.csv')
-X = df.drop('SNR_dB', axis=1)
-y = df['SNR_dB']
-</code></pre>
+<ul>
+  <li>MATLAB R2024a (or later)</li>
+  <li>5G Toolbox</li>
+  <li>Communications Toolbox</li>
+  <li>Signal Processing Toolbox</li>
+  <li>Statistics and Machine Learning Toolbox</li>
+</ul>
+
+<p>The dataset generation code relies on MATLAB's <code>nrCDLChannel</code> implementation from the 5G Toolbox together with modulation, channel modeling, and signal processing functions provided by the listed toolboxes.</p>
+
 
 <h2>Repository Structure</h2>
 <ul>
@@ -129,18 +128,16 @@ y = df['SNR_dB']
 
 
 <h2>Citation</h2>
-<p>If you use this dataset, please cite:</p>
-<pre><code>@article{singha2026lightweight,
-  title   = {Lightweight Domain-Adaptive SNR Estimation for 5G NR Channels via Scenario-Embedded Transfer Learning},
-  author  = {Singha, Swandip and Chowdhury, Aditta},
-  journal = {IEEE Wireless Communications Letters},
-  year    = {2026}
-}
-</code></pre>
+
+<p>If you use this dataset, please cite the accompanying paper after publication. Citation information will be updated here once the manuscript is accepted.</p>
 
 
 <h2>Contributing</h2>
 <p>We welcome contributions! If you want to extend the dataset, add new impairment models, fix bugs, or improve documentation, please open an issue or submit a pull request.</p>
 
 <h2>License</h2>
-<p>Add your chosen license here (e.g., CC-BY-4.0 is common for datasets, MIT for accompanying code).</p>
+
+<p>
+This project is distributed under the MIT License.
+See the <code>LICENSE</code> file for details.
+</p>
