@@ -1,196 +1,146 @@
-# 5G NR SNR Estimation under Cross-Scenario Domain Generalization
+<h1 align="center">5G NR CDL-SNR Dataset</h1>
 
-This repository contains the MATLAB implementation used to generate a synthetic dataset for robust Signal-to-Noise Ratio (SNR) estimation in 5G New Radio (NR) systems. The framework combines standardized 3GPP channel models, realistic RF impairments, pilot-based equalization, feature engineering, and cross-domain evaluation.
+<p align="center">
+  A 100,000-sample synthetic dataset for SNR estimation in 5G NR channels, generated across four 3GPP TR 38.901 CDL propagation profiles with six stochastic RF impairments, MIMO beamforming, and classical pilot-based SNR estimator baselines.
+</p>
 
----
+<p align="center"><em>Companion dataset for the paper "Lightweight Domain-Adaptive SNR Estimation for 5G NR Channels via Scenario-Embedded Transfer Learning."</em></p>
 
-## Overview
 
-Reliable SNR estimation is fundamental for adaptive modulation, coding, beamforming, and link adaptation in modern wireless communication systems. This project investigates **cross-scenario domain generalization**, where models are trained on multiple propagation environments and evaluated on an unseen channel scenario.
+<h2>Overview</h2>
+<p>This repository provides a standards-compliant, fully-labeled dataset for benchmarking SNR estimation techniques under realistic 5G NR channel conditions:</p>
+<ul>
+  <li><strong>3GPP CDL Channel Realizations:</strong> Four propagation profiles (CDL-A/B/C/D) spanning indoor office, urban LOS, urban NLOS, and canyon environments.</li>
+  <li><strong>MIMO & Beamforming:</strong> Five antenna configurations (small cell, typical BS, massive MIMO, symmetric, beamforming-optimized) with random steering and effective channel estimation.</li>
+  <li><strong>RF Impairment Models:</strong> Doppler, PA nonlinearity, IQ imbalance, phase noise, colored noise, and co-channel interference, each injected stochastically at realistic deployment rates.</li>
+  <li><strong>Classical SNR Estimator Baselines:</strong> LS, ML, EVM, M2M4, Rao, and decision-directed (DD) estimators computed per sample as reference labels.</li>
+  <li><strong>Environment Setup:</strong> MATLAB generator script to regenerate or extend the dataset from scratch.</li>
+</ul>
 
-The complete pipeline includes:
+<h2>System Architecture</h2>
+<p align="center">
+  <img src="assets/pipeline_architecture.png" alt="5G NR SNR Estimation Dataset Generation Pipeline" width="800">
+</p>
+<p align="center"><em>Fig. 1 — End-to-end dataset generation pipeline: scenario selection, 3GPP CDL channel realization, MIMO propagation, RF impairment injection, and feature-based SNR estimation.</em></p>
 
-- 5G NR waveform generation
-- 3GPP TR 38.901 CDL channel simulation
-- Random MIMO beamforming
-- Realistic RF impairment injection
-- Pilot-based LS/MMSE equalization
-- Feature extraction
-- Cross-domain SNR estimation
+<table>
+  <tr><th>Stage</th><th>Description</th></tr>
+  <tr><td>Initialization &amp; System Setup</td><td>RNG seed = 42, f<sub>c</sub> = 3.5 GHz, sample rate = 15.36 MHz, 1024 symbols/frame</td></tr>
+  <tr><td>Scenario Selection</td><td>4 environments — Indoor, Urban LOS, Urban NLOS, Canyon</td></tr>
+  <tr><td>3GPP CDL Channel Model</td><td>Indoor → CDL-A, Urban LOS → CDL-B, Urban NLOS → CDL-C, Canyon → CDL-D</td></tr>
+  <tr><td>Antenna Configuration</td><td>5 MIMO configs: 4×2, 8×4, 16×8, 4×4, 8×2</td></tr>
+  <tr><td>Channel Realization</td><td>Simulates multipath fading for the selected scenario and antenna configuration</td></tr>
+  <tr><td>MIMO Processing &amp; Propagation</td><td>Effective channel matrix H, rank(H)/cond(H), beamforming, signal propagation</td></tr>
+  <tr><td>Adaptive Modulation</td><td>QPSK / 16-QAM / 64-QAM, selected by target SNR</td></tr>
+  <tr><td>SNR &amp; Noise Modeling</td><td>Target SNR, noise power, AWGN + 10% impulsive noise + RF impairments</td></tr>
+  <tr><td>Signal Processing &amp; Feature Generation</td><td>Pilot extraction, LS/ML SNR estimation, MMSE equalization, feature vector generation</td></tr>
+</table>
 
----
 
-## Dataset Generation
 
-The dataset is generated entirely using MATLAB simulation.
+<h2>Dataset Composition</h2>
+<table>
+  <tr><th>Profile</th><th>Delay Spread (ns)</th><th>SNR Range (dB)</th><th>Rician K-factor (dB)</th><th>Samples</th></tr>
+  <tr><td>CDL-A (Indoor Office)</td><td>10–50</td><td>0 to 25</td><td>5–15</td><td>25,000</td></tr>
+  <tr><td>CDL-B (Outdoor Urban LOS)</td><td>50–150</td><td>−5 to 20</td><td>3–10</td><td>20,000</td></tr>
+  <tr><td>CDL-C (Outdoor Urban NLOS)</td><td>100–300</td><td>−10 to 15</td><td>0–3</td><td>35,000</td></tr>
+  <tr><td>CDL-D (Outdoor Canyon)</td><td>200–400</td><td>−15 to 10</td><td>0–2</td><td>20,000</td></tr>
+</table>
+<p><strong>Total: 100,000 samples</strong> across 4 CDL profiles × 5 antenna configurations × 3 modulation schemes.</p>
 
-### System Configuration
 
-| Parameter | Value |
-|-----------|-------|
-| Carrier Frequency | 3.5 GHz |
-| Sampling Rate | 15.36 MHz |
-| Modulation | QPSK, 16-QAM, 64-QAM |
-| Channel Standard | 3GPP TR 38.901 |
-| Channel Profiles | CDL-A, CDL-B, CDL-C, CDL-D |
 
-The channel response is modeled as
+<h2>RF Impairment Models</h2>
+<table>
+  <tr><th>Impairment</th><th>Model</th><th>Injection Rate</th></tr>
+  <tr><td>Doppler</td><td>h(t) = h<sub>eff</sub>·e<sup>j2πf<sub>D</sub>t</sup>, f<sub>D</sub> = v·f<sub>c</sub>/c</td><td>100%</td></tr>
+  <tr><td>PA Nonlinearity</td><td>x<sub>PA</sub> = x / (1 + α|x|²), α ~ U(0.05, 0.20)</td><td>60%</td></tr>
+  <tr><td>IQ Imbalance</td><td>x<sub>IQ</sub> = α<sub>IQ</sub>x + β<sub>IQ</sub>x*, gain ∈ [0.3, 1.5] dB, phase ∈ [1°, 5°]</td><td>50%</td></tr>
+  <tr><td>Phase Noise</td><td>Wiener process random walk, −80 dBc/Hz</td><td>80%</td></tr>
+  <tr><td>Colored Noise</td><td>n[k] = ρ·n[k−1] + √(1−ρ²)·w[k], ρ ~ U(0.3, 0.8)</td><td>40%</td></tr>
+  <tr><td>Co-Channel Interference</td><td>BPSK interferer, SIR ~ U(5, 20) dB</td><td>30%</td></tr>
+</table>
+<p>An additional impulsive noise component is injected with 10% probability, affecting ~2% of symbols when present.</p>
+<blockquote>
+  <strong>Note:</strong> Carrier Frequency Offset (CFO) is intentionally excluded — at a normalized offset of ε = 0.01–0.05 it dominates all estimators (ΔRMSE ≈ +30 dB), preventing meaningful baseline comparison. CFO compensation (e.g., Moose/Schmidl-Cox) is assumed at the receiver.
+</blockquote>
 
-\[
-H[k]=\sum_{n=1}^{N_{\text{paths}}}\alpha_n e^{-j2\pi k\Delta f\tau_n}.
-\]
+<h2>Classical SNR Estimator Baselines</h2>
+<table>
+  <tr><th>Estimator</th><th>Basis</th></tr>
+  <tr><td>LS-SNR</td><td>Least-squares pilot channel estimate</td></tr>
+  <tr><td>ML-SNR</td><td>Maximum-likelihood pilot channel estimate</td></tr>
+  <tr><td>EVM-SNR</td><td>Error Vector Magnitude after MMSE equalization</td></tr>
+  <tr><td>M2M4-SNR</td><td>Second/fourth-moment (M2M4) blind estimator</td></tr>
+  <tr><td>Rao-SNR</td><td>Energy-based (Rao) blind estimator</td></tr>
+  <tr><td>DD-SNR</td><td>Decision-directed estimator</td></tr>
+</table>
 
-Random MIMO beamforming is applied using randomized antenna spacing and steering directions to increase channel diversity.
 
----
+<h2>Feature Vector (22 features/sample)</h2>
+<table>
+  <tr><th>#</th><th>Feature</th><th>#</th><th>Feature</th></tr>
+  <tr><td>1</td><td>Channel gain</td><td>12</td><td>Equalized signal power</td></tr>
+  <tr><td>2</td><td>Channel condition number</td><td>13</td><td>Equalized signal std</td></tr>
+  <tr><td>3</td><td>Channel rank</td><td>14</td><td>Kurtosis</td></tr>
+  <tr><td>4</td><td>RMS delay spread (ns)</td><td>15</td><td>Num. Tx antennas</td></tr>
+  <tr><td>5</td><td>Coherence bandwidth (MHz)</td><td>16</td><td>Num. Rx antennas</td></tr>
+  <tr><td>6</td><td>K-factor (dB)</td><td>17</td><td>Flag: PA nonlinearity active</td></tr>
+  <tr><td>7</td><td>Number of paths</td><td>18</td><td>Flag: IQ imbalance active</td></tr>
+  <tr><td>8</td><td>Max delay (ns)</td><td>19</td><td>Doppler shift (Hz)</td></tr>
+  <tr><td>9</td><td>Rx power</td><td>20</td><td>Flag: phase noise active</td></tr>
+  <tr><td>10</td><td>Rx power std</td><td>21</td><td>Flag: colored noise active</td></tr>
+  <tr><td>11</td><td>Rx phase mean</td><td>22</td><td>Flag: co-channel interference active</td></tr>
+</table>
+<p>Target label: <code>SNR_dB</code> (ground-truth SNR in dB).</p>
 
-## RF Impairment Modeling
 
-Each generated sample includes additive white Gaussian noise (AWGN), impulsive noise, and realistic RF hardware impairments.
+<h2>Getting Started</h2>
 
-### Noise
+<h3>Installation</h3>
+<p>Clone the repository:</p>
+<pre><code>git clone &lt;your-repo-url&gt;
+cd &lt;your-repo-folder&gt;
+</code></pre>
+<p>Requires MATLAB with the 5G Toolbox and Communications Toolbox (for <code>nrCDLChannel</code>, <code>pskmod</code>/<code>qammod</code>, etc.).</p>
 
-- Additive White Gaussian Noise (AWGN)
-- Impulsive Noise
-  - Injection probability: **10%**
-  - Approximately **2%** of symbols affected when present
+<h3>Usage</h3>
+<p>Regenerate the full 100K-sample dataset:</p>
+<pre><code>% Run the dataset generator
+generate_dataset
+</code></pre>
+<p>This produces <code>Enhanced_5G_Dataset_100K.csv</code> (feature matrix + labels) and <code>enhanced_baseline_results.mat</code> (classical estimator outputs for benchmarking).</p>
 
-### RF Impairments
+<p>Loading the dataset in Python:</p>
+<pre><code>import pandas as pd
 
-| Impairment | Probability |
-|------------|------------:|
-| Doppler Shift | 100% |
-| Power Amplifier Nonlinearity | 60% |
-| IQ Imbalance | 50% |
-| Oscillator Phase Noise | 80% |
-| Colored Noise | 40% |
-| Co-channel Interference | 30% |
+df = pd.read_csv('data/Enhanced_5G_Dataset_100K.csv')
+X = df.drop('SNR_dB', axis=1)
+y = df['SNR_dB']
+</code></pre>
 
----
+<h2>Repository Structure</h2>
+<ul>
+  <li><code>assets/pipeline_architecture.png</code> — Fig. 1, dataset generation pipeline diagram</li>
+  <li><code>data/Enhanced_5G_Dataset_100K.csv</code> — 100K samples, 22 features + SNR_dB label</li>
+  <li><code>generate_dataset.m</code> — MATLAB dataset generator</li>
+  <li><code>requirements.txt</code> — Python package dependencies for downstream analysis</li>
+</ul>
 
-## Receiver Processing
 
-The receiver performs
-
-- Pilot insertion (every 10 symbols)
-- Least Squares (LS) channel estimation
-- MMSE equalization
-- Feature extraction
-
-The MMSE equalizer is
-
-\[
-g_{\text{MMSE}}
-=
-\frac{\hat h_{\text{LS}}^{*}}
-{|\hat h_{\text{LS}}|^2+\hat\sigma_n^2}.
-\]
-
----
-
-## Feature Extraction
-
-Each sample is represented by a **16-dimensional feature vector**.
-
-### Channel Features
-
-- Channel gain
-- Channel rank
-- Condition number
-- Delay spread
-- Coherence bandwidth
-- Rician K-factor
-- Number of propagation paths
-- Maximum delay
-
-### Signal Features
-
-- Received power
-- Received power standard deviation
-- Mean received phase
-- Equalized power
-- Equalized power standard deviation
-- Kurtosis
-
-### Configuration Features
-
-- Number of transmit antennas
-- Number of receive antennas
-
-All features are standardized using statistics computed from the training set.
-
----
-
-## Dataset Statistics
-
-| Profile | Delay Spread | SNR Range | Samples |
-|----------|-------------:|----------:|---------:|
-| CDL-A | 10–50 ns | 0 to 25 dB | 25,000 |
-| CDL-B | 50–150 ns | -5 to 20 dB | 20,000 |
-| CDL-C | 100–300 ns | -10 to 15 dB | 35,000 |
-| CDL-D | 200–400 ns | -15 to 10 dB | 20,000 |
-
-**Total Samples:** **100,000**
-
----
-
-## Evaluation Protocol
-
-A strict **Leave-One-CDL-Profile-Out (LOCO)** protocol is adopted.
-
-For each experiment:
-
-- Train on three CDL profiles.
-- Reserve the remaining CDL profile as the unseen target domain.
-- Repeat until every CDL profile has served as the target domain.
-
----
-
-## Repository Structure
-
-```text
-.
-├── data_generation/
-│   ├── generate_dataset.m
-│   ├── cdl_channel.m
-│   ├── apply_impairments.m
-│   ├── feature_extraction.m
-│   └── utils/
-│
-├── models/
-├── dataset/
-├── figures/
-├── results/
-└── README.md
-```
-
----
-
-## Requirements
-
-- MATLAB R2023a or newer
-- 5G Toolbox
-- Communications Toolbox
-- Signal Processing Toolbox
-- Statistics and Machine Learning Toolbox
-
----
-
-## Citation
-
-If you use this repository in your research, please cite the associated paper.
-
-```bibtex
-@article{YourPaper2026,
-  title={Domain-Generalized SNR Estimation for 5G NR Using Transfer Learning and Explainable AI},
-  author={Author Names},
-  journal={IEEE Wireless Communications Letters},
-  year={2026}
+<h2>Citation</h2>
+<p>If you use this dataset, please cite:</p>
+<pre><code>@article{singha2026lightweight,
+  title   = {Lightweight Domain-Adaptive SNR Estimation for 5G NR Channels via Scenario-Embedded Transfer Learning},
+  author  = {Singha, Swandip and Chowdhury, Aditta},
+  journal = {IEEE Wireless Communications Letters},
+  year    = {2026}
 }
-```
+</code></pre>
 
----
 
-## License
+<h2>Contributing</h2>
+<p>We welcome contributions! If you want to extend the dataset, add new impairment models, fix bugs, or improve documentation, please open an issue or submit a pull request.</p>
 
-This repository is released for academic and research purposes. If you use this code or dataset in your work, please cite the associated publication.
+<h2>License</h2>
+<p>Add your chosen license here (e.g., CC-BY-4.0 is common for datasets, MIT for accompanying code).</p>
