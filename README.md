@@ -14,7 +14,7 @@
   <li><strong>MIMO & Beamforming:</strong> Five antenna configurations (small cell, typical BS, massive MIMO, symmetric, beamforming-optimized) with random steering and effective channel estimation.</li>
   <li><strong>RF Impairment Models:</strong> Doppler, PA nonlinearity, IQ imbalance, phase noise, colored noise, and co-channel interference, each injected stochastically at realistic deployment rates.</li>
   <li><strong>Classical SNR Estimator Baselines:</strong> LS, ML, EVM, M2M4, Rao, and decision-directed (DD) estimators computed per sample as reference labels.</li>
-  <li><strong>Environment Setup:</strong> MATLAB generator script to regenerate or extend the dataset from scratch.</li>
+  <li><strong>MATLAB Dataset Generator:</strong> Source code is provided to regenerate or extend the dataset from scratch.</li>
 </ul>
 
 <h2>System Architecture</h2>
@@ -93,8 +93,7 @@
   <tr><td>11</td><td>Rx phase mean</td><td>22</td><td>Flag: co-channel interference active</td></tr>
 </table>
 <p>Target label: <code>SNR_dB</code> (ground-truth SNR in dB).</p>
-
-
+Each row corresponds to one simulated transmission instance with its associated feature vector and ground-truth SNR.
 <h2>Getting Started</h2>
 
 <h3>Installation</h3>
